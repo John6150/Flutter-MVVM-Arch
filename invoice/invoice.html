@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice #2 — TWOLETT LTD</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 22mm 20mm;
+    margin: 0 auto;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 3px solid #111;
+    padding-bottom: 18px;
+  }
+  .brand .logo {
+    width: 200px;
+    height: 56px;
+    margin-bottom: 12px;
+  }
+  .brand .logo img { width: 100%; height: 100%; object-fit: contain; object-position: left; }
+  .brand h1 { font-size: 22px; letter-spacing: 1px; }
+  .brand .addr { font-size: 12px; color: #555; line-height: 1.6; margin-top: 6px; }
+  .doc { text-align: right; }
+  .doc .title { font-size: 38px; font-weight: 800; letter-spacing: 4px; color: #111; }
+  .doc .meta { margin-top: 14px; font-size: 13px; line-height: 1.9; }
+  .doc .meta span { color: #777; display: inline-block; min-width: 90px; text-align: left; }
+  .doc .meta b { color: #111; }
+
+  .parties { margin-top: 34px; }
+  .parties .label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: #888; margin-bottom: 6px;
+  }
+  .parties .name { font-size: 15px; font-weight: 700; }
+  .parties .lines { font-size: 12px; color: #555; line-height: 1.7; margin-top: 4px; }
+  .parties a { color: #2563c9; text-decoration: none; }
+
+  table.items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 34px;
+  }
+  table.items thead th {
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    padding: 12px 14px;
+  }
+  table.items thead th.amt { text-align: right; }
+  table.items tbody td {
+    padding: 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
+  }
+  table.items tbody td.amt { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .totals { margin-top: 18px; display: flex; justify-content: flex-end; }
+  .totals table { width: 280px; }
+  .totals td { padding: 8px 14px; font-size: 14px; }
+  .totals tr.grand td {
+    border-top: 2px solid #111;
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .totals td.amt { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .section { margin-top: 30px; }
+  .section h3 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: #888; margin-bottom: 6px;
+  }
+  .section p { font-size: 13px; color: #444; line-height: 1.6; }
+
+  .sign { margin-top: 52px; display: flex; justify-content: flex-end; }
+  .sign .box { text-align: center; }
+  .sign .img { width: 220px; height: 120px; }
+  .sign .img img { width: 100%; height: 100%; object-fit: contain; }
+  .sign .rule { border-top: 1px solid #333; margin-top: -8px; padding-top: 6px; }
+  .sign .who { font-size: 13px; font-weight: 700; }
+  .sign .when { font-size: 11px; color: #777; margin-top: 2px; }
+
+  .foot {
+    margin-top: 46px; padding-top: 14px;
+    border-top: 1px solid #eee;
+    text-align: center; font-size: 11px; color: #999;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <div class="brand">
+      <div class="logo"><img width="30" height="30" src="sign.svg" alt="TWOLETT logo"></div>
+      <h1>TWOLETT LTD</h1>
+      <div class="addr">
+        NO 12 PA TAIWO OGUNLAJE STREET<br>
+        APANPA AREA, RING ROAD<br>
+        Oyo, Nigeria<br>
+        +234 810 742 8901<br>
+        olalekejohn@gmail.com
+      </div>
+    </div>
+    <div class="doc">
+      <div class="title">INVOICE</div>
+      <div class="meta">
+        <div><span>Invoice #</span> <b>2</b></div>
+        <div><span>Date</span> <b>June 16, 2026</b></div>
+        <div><span>Due date</span> <b>June 30, 2026</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="parties">
+    <div class="label">Bill To</div>
+    <div class="name">Jim Bettencourt</div>
+    <div class="lines">
+      California, United States<br>
+      +1 (530) 330 3139<br>
+      bbribaw@gmail.com<br>
+      <a href="https://dev.twolett.com/">https://dev.twolett.com/</a>
+    </div>
+  </div>
+
+  <table class="items">
+    <thead>
+      <tr>
+        <th style="width:40px;">#</th>
+        <th>Description</th>
+        <th class="amt" style="width:120px;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>First payment for admin App development</td>
+        <td class="amt">$100.00</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Social media management via Viraly </td>
+        <td class="amt">$100.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <table>
+      <tr>
+        <td>Subtotal</td>
+        <td class="amt">$200.00</td>
+      </tr>
+      <tr class="grand">
+        <td>Total</td>
+        <td class="amt">$200.00</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>Payment Methods</h3>
+    <p>Kindly follow the payment link that was sent to your email to complete payment.</p>
+  </div>
+
+  <div class="section">
+    <h3>Notes</h3>
+    <p>Thank you for your patronage.</p>
+  </div>
+
+  <div class="sign">
+    <div class="box">
+      <div class="img"><img src="sig.png" alt="Signature"></div>
+      <div class="rule">
+        <div class="who">John Olaleke</div>
+        <div class="when">Date: June 19, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    TWOLETT LTD &nbsp;•&nbsp; NO 12 PA TAIWO OGUNLAJE STREET, APANPA AREA, RING ROAD, Oyo, Nigeria &nbsp;•&nbsp; olalekejohn@gmail.com
+  </div>
+
+</div>
+</body>
+</html>
