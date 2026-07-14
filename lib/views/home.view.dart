@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:first_project/viewmodels/increament.viewmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pay_with_paystack/pay_with_paystack.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -78,6 +81,8 @@ class _HomeState extends ConsumerState<Home> {
     final setStateProvider = ref.read(increamentVMProvider.notifier);
 
     final isRecording = ref.watch(recordAudioProvider).value ?? false;
+    final testKey = dotenv.get('TEST_SECRET_KEY');
+    // final publicKey = dotenv.get('TEST_PUBLIC_KEY');
 
     return Scaffold(
       appBar: AppBar(
@@ -90,39 +95,43 @@ class _HomeState extends ConsumerState<Home> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            key: Key('decrement_button'),
             onPressed: () {
+              print(testKey);
               // counter.decreament();
               setStateProvider.decreament();
             },
             child: Icon(Icons.remove),
           ),
-          SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () {
-              // counter.increament();
-              setStateProvider.increament(context);
-            },
-            child: Icon(Icons.add),
-          ),
-          SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () async {
-              final result = await ref
-                  .read(recordAudioProvider.notifier)
-                  .recording();
-              print('Recording path: $result');
-              setState(() {
-                recordingPath = result;
-              });
+          // SizedBox(height: 10),
+          // FloatingActionButton(
+          //   key: Key('increment_button'),
+          //   onPressed: () {
+          //     // counter.increament();
+          //     setStateProvider.increament(context);
+          //   },
+          //   child: Icon(Icons.add),
+          // ),
+          // SizedBox(height: 10),
+          // FloatingActionButton(
+          //   key: Key('record_button'),
+          //   onPressed: () async {
+          //     final result = await ref
+          //         .read(recordAudioProvider.notifier)
+          //         .recording();
+          //     print('Recording path: $result');
+          //     setState(() {
+          //       recordingPath = result;
+          //     });
 
-              // counter.increament();
-              // setStateProvider.increament(context);
-            },
-            child: Icon(
-              Icons.circle,
-              color: isRecording ? Colors.red : Colors.black,
-            ),
-          ),
+          //     // counter.increament();
+          //     // setStateProvider.increament(context);
+          //   },
+          //   child: Icon(
+          //     Icons.circle,
+          //     color: isRecording ? Colors.red : Colors.black,
+          //   ),
+          // ),
         ],
       ),
       body: Container(
@@ -155,6 +164,120 @@ class _HomeState extends ConsumerState<Home> {
                 ),
               ],
             ),
+
+            SizedBox(height: 20),
+            CupertinoButton(
+              child: Text('Tap me'),
+              color: Colors.blue,
+
+              onPressed: () async {
+                await PayWithPayStack().now(
+                  context: context,
+                  secretKey: testKey,
+                  customerEmail: 'abc@gmail.com',
+                  amount: 1000,
+                  showAppBar: true,
+
+                  callbackUrl: 'https://www.google.com',
+                  currency: 'NGN',
+                  reference: 'ref-${DateTime.now().millisecondsSinceEpoch}',
+                  transactionCompleted: (data) =>
+                      print('Transaction completed: $data'),
+                  transactionCancelled: () {},
+                  transactionNotCompleted: (data) =>
+                      print('Transaction not completed: $data'),
+
+                  // PaystackConfig(
+                  //   secretKey: testKey,
+                  //   currency: 'NGN',
+                  //   callbackUrl: 'https://www.google.com',
+                  //   enableLogging:
+                  //       true, // logs requests in debug, silent in release
+                  //   timeout: const Duration(seconds: 30),
+                  // ),
+                );
+              },
+              // print('Platform is ${Platform.operatingSystem}');
+              // ANDROID ALERT DIALOG
+              // showDialog(
+              //   context: context,
+              //   builder: (context) => AlertDialog(
+              //     title: Text('Alert'),
+              //     content: Text(
+              //       'This is a platform-specific alert dialog.',
+              //     ),
+              //     actions: [
+              //       TextButton(
+              //         child: Text('Cancel'),
+              //         onPressed: () => Navigator.of(context).pop(),
+              //       ),
+              //       TextButton(
+              //         child: Text('OK'),
+              //         onPressed: () => Navigator.of(context).pop(),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // iOS ALERT DIALOG
+              // showDialog(
+              //   context: context,
+
+              //   builder: (context) => CupertinoDatePicker(
+              //     showTimeSeparator: false,
+              //     mode: CupertinoDatePickerMode.date,
+              //     backgroundColor: Colors.white,
+              //     onDateTimeChanged: (val) {},
+              //   ),
+
+              // CupertinoAlertDialog(
+              //   title: Text('Cupertino Alert'),
+              //   content: Text('This is a Cupertino-style alert dialog.'),
+              //   actions: [
+              //     CupertinoDialogAction(
+              //       child: Text('Cancel'),
+              //       onPressed: () => Navigator.of(context).pop(),
+              //     ),
+              //     CupertinoDialogAction(
+              //       child: Text('OK'),
+              //       onPressed: () => Navigator.of(context).pop(),
+              //     ),
+              //   ],
+              // ),
+            ),
+
+            // ANDROID BOTTOM SHEET
+            // showModalBottomSheet(
+            //   context: context,
+            //   builder: (context) => Container(
+            //     height: 200,
+            //     color: Colors.white,
+            //     child: Center(child: Text('This is a bottom sheet')),
+            //   ),
+            // ),
+
+            // iOS BOTTOM SHEET
+
+            // showCupertinoModalPopup(
+            //   context: context,
+            //   builder: (context) => CupertinoActionSheet(
+            //     title: Text('Cupertino Action Sheet'),
+            //     message: Text('This is a Cupertino-style action sheet.'),
+            //     actions: [
+            //       CupertinoActionSheetAction(
+            //         child: Text('Option 1'),
+            //         onPressed: () => Navigator.of(context).pop(),
+            //       ),
+            //       CupertinoActionSheetAction(
+            //         child: Text('Option 2'),
+            //         onPressed: () => Navigator.of(context).pop(),
+            //       ),
+            //     ],
+            //     cancelButton: CupertinoActionSheetAction(
+            //       child: Text('Cancel'),
+            //       onPressed: () => Navigator.of(context).pop(),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
