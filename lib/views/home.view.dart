@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -8,7 +9,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pay_with_paystack/pay_with_paystack.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_darwin/local_auth_darwin.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -21,20 +26,76 @@ class _HomeState extends ConsumerState<Home> {
   late final AudioPlayer _player;
   bool _isPlaying = false;
   String? recordingPath;
+  final LocalAuthentication auth = LocalAuthentication();
+
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
+
+  late Position position;
+  CameraPosition? _kGooglePlex;
 
   @override
   void initState() {
     super.initState();
+
+    Future.delayed(Duration.zero, () async {
+      final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+      final bool canAuthenticate =
+          canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+
+      final List<BiometricType> availableBiometrics = await auth
+          .getAvailableBiometrics();
+
+      // print('this is bio:::: $availableBiometrics');
+
+      // await auth.getAvailableBiometrics().then(
+      //   (val) => print('this is the list of biometric: $val'),
+      // );
+
+      if (availableBiometrics.contains(BiometricType.strong) ||
+          availableBiometrics.contains(BiometricType.face) ||
+          availableBiometrics.contains(BiometricType.fingerprint) ||
+          availableBiometrics.contains(BiometricType.iris)) {
+        final bool didAuthenticate = await auth.authenticate(
+          localizedReason: 'Please authenticate to show account balance',
+          authMessages: [
+            AndroidAuthMessages(
+              signInTitle: 'Oops! Biometric authentication required!',
+              cancelButton: 'No thanks',
+            ),
+            IOSAuthMessages(
+              cancelButton: 'No thanks',
+              localizedFallbackTitle: 'Use your biometrics',
+            ),
+          ],
+          biometricOnly: true,
+        );
+        if (didAuthenticate) {
+        } else {
+          return;
+        }
+      }
+    });
+
+    // print('this is the supported biometrics:: ${a}');
+
     _player = AudioPlayer();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Position position = await ref.read(locatorProvider.notifier).build();
+      position = await ref.read(locatorProvider.notifier).build();
+      setState(() {
+        _kGooglePlex = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 14.4746,
+        );
+      });
+
       List<Placemark> placemarks = await ref
           .read(locatorProvider.notifier)
           .locateMe(long: position.longitude, lat: position.latitude);
-      print('$placemarks');
-      print(
-        'Current Position: ${position.latitude}, ${position.longitude.runtimeType}, ${position.accuracy}, ${position.isMocked}',
-      );
+      // print('$placemarks');
+      // print(
+      //   'Current Position: ${position.latitude}, ${position.longitude.runtimeType}, ${position.accuracy}, ${position.isMocked}',
+      // );
     });
 
     // Future.delayed(Duration.zero, () async {
@@ -82,7 +143,6 @@ class _HomeState extends ConsumerState<Home> {
 
     final isRecording = ref.watch(recordAudioProvider).value ?? false;
     final testKey = dotenv.get('TEST_SECRET_KEY');
-    // final publicKey = dotenv.get('TEST_PUBLIC_KEY');
 
     return Scaffold(
       appBar: AppBar(
@@ -244,6 +304,22 @@ class _HomeState extends ConsumerState<Home> {
               //   ],
               // ),
             ),
+
+            SizedBox(height: 20),
+
+            _kGooglePlex != null
+                ? Container(
+                    height: 400,
+                    decoration: BoxDecoration(border: Border.all(width: 2)),
+                    child: GoogleMap(
+                      mapType: MapType.hybrid,
+                      initialCameraPosition: _kGooglePlex!,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
 
             // ANDROID BOTTOM SHEET
             // showModalBottomSheet(
