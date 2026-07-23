@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:first_project/services/notification.service.dart';
 import 'package:first_project/viewmodels/increament.viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,8 @@ class _HomeState extends ConsumerState<Home> {
 
   late Position position;
   CameraPosition? _kGooglePlex;
+
+  
 
   @override
   void initState() {
@@ -256,6 +259,62 @@ class _HomeState extends ConsumerState<Home> {
                   //   timeout: const Duration(seconds: 30),
                   // ),
                 );
+              },
+              // print('Platform is ${Platform.operatingSystem}');
+              // ANDROID ALERT DIALOG
+              // showDialog(
+              //   context: context,
+              //   builder: (context) => AlertDialog(
+              //     title: Text('Alert'),
+              //     content: Text(
+              //       'This is a platform-specific alert dialog.',
+              //     ),
+              //     actions: [
+              //       TextButton(
+              //         child: Text('Cancel'),
+              //         onPressed: () => Navigator.of(context).pop(),
+              //       ),
+              //       TextButton(
+              //         child: Text('OK'),
+              //         onPressed: () => Navigator.of(context).pop(),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // iOS ALERT DIALOG
+              // showDialog(
+              //   context: context,
+
+              //   builder: (context) => CupertinoDatePicker(
+              //     showTimeSeparator: false,
+              //     mode: CupertinoDatePickerMode.date,
+              //     backgroundColor: Colors.white,
+              //     onDateTimeChanged: (val) {},
+              //   ),
+
+              // CupertinoAlertDialog(
+              //   title: Text('Cupertino Alert'),
+              //   content: Text('This is a Cupertino-style alert dialog.'),
+              //   actions: [
+              //     CupertinoDialogAction(
+              //       child: Text('Cancel'),
+              //       onPressed: () => Navigator.of(context).pop(),
+              //     ),
+              //     CupertinoDialogAction(
+              //       child: Text('OK'),
+              //       onPressed: () => Navigator.of(context).pop(),
+              //     ),
+              //   ],
+              // ),
+            ),
+
+            SizedBox(height: 20),
+            CupertinoButton(
+              child: Text('Notify me'),
+              color: Colors.blue,
+
+              onPressed: () async {
+                await NotificationService().showBasicNotification();
               },
               // print('Platform is ${Platform.operatingSystem}');
               // ANDROID ALERT DIALOG
